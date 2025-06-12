@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Novo Produto{% endblock %}
+{% block content %}
+<h2>{{ produto and 'Editar' or 'Novo' }} Produto</h2>
+<form method="POST">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome</label>
+    <input type="text" class="form-control" name="nome" id="nome" value="{{ produto.nome if produto else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="descricao" class="form-label">Descrição</label>
+    <input type="text" class="form-control" name="descricao" id="descricao" value="{{ produto.descricao if produto else '' }}">
+  </div>
+  <div class="mb-3">
+    <label for="quantidade" class="form-label">Quantidade</label>
+    <input type="number" class="form-control" name="quantidade" id="quantidade" value="{{ produto.quantidade if produto else 0 }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="categoria" class="form-label">Categoria</label>
+    <select class="form-control" name="categoria" id="categoria" required>
+      {% for categoria in categorias %}
+      <option value="{{ categoria.id }}"
+        {% if produto and produto.categoria_id == categoria.id %}selected{% endif %}>
+        {{ categoria.nome }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="/produtos" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

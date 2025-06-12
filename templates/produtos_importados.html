@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Sobre{% endblock %}
+{% block content %}
+<h2>Produtos Importados</h2>
+
+<form method="POST" action="/importar_para_estoque">
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selecionar_todos"></th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in produtos %}
+            <tr>
+                <td><input type="checkbox" name="produto_ids" value="{{ p.id }}"></td>
+                <td>{{ p.nome }}</td>
+                <td>{{ p.categoria }}</td>
+                <td>{{ p.quantidade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Enviar para estoque</button>
+</form>
+
+<form method="POST" action="/excluir_importados" class="mt-2">
+    <!-- Mesma seleção compartilhada -->
+    {% for p in produtos %}
+    <input type="hidden" name="produto_ids" value="{{ p.id }}">
+    {% endfor %}
+    <button type="submit" class="btn btn-danger">Excluir todos importados</button>
+</form>
+
+<a href="/exportar_importados" class="btn btn-primary mt-3">Exportar todos como ZIP</a>
+
+<script>
+    document.getElementById('selecionar_todos').addEventListener('change', function () {
+        const checkboxes = document.querySelectorAll('input[name="produto_ids"]');
+        for (let box of checkboxes) {
+            box.checked = this.checked;
+        }
+    });
+</script>
+
+
+
+{% endblock %}

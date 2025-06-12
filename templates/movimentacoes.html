@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+{% block title %}Movimentações{% endblock %}
+{% block content %}
+<h2>Movimentações</h2>
+<a href="/movimentacao/nova" class="btn btn-primary mb-3">Nova Movimentação</a>
+<table class="table table-striped">
+    <thead><tr><th>Tipo</th><th>Produto</th><th>Quantidade</th><th>Data</th></tr></thead>
+    <tbody>
+        {% for m in movimentacoes %}
+        <tr>
+            <td>{{ m.tipo }}</td>
+            <td>{{ m.produto.nome }}</td>
+            <td>{{ m.quantidade }}</td>
+            <td>{{ m.data.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Sobre{% endblock %}
+{% block content %}
+<h2>Importar Dados por URL</h2>
+<form method="post">
+    <label for="url">URL do arquivo (.json ou .zip):</label>
+    <input type="url" name="url" id="url" class="form-control mb-3" required
+        placeholder="https://exemplo.com/dados.json">
+    <button type="submit" class="btn btn-primary">Importar</button>
+</form>
+
+{% endblock %}

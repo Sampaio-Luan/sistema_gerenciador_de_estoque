@@ -1,0 +1,138 @@
+<!-- {% extends 'base.html' %}
+{% block title %}Novo Usuário{% endblock %}
+{% block content %}
+<h2>{{ usuario and 'Editar' or 'Novo' }} Usuário</h2>
+<form method="POST">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome</label>
+    <input type="text" class="form-control" name="nome" id="nome" value="{{ usuario.nome if usuario else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" name="email" id="email" value="{{ usuario.email if usuario else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="senha" class="form-label">Senha</label>
+    <input type="password" class="form-control" name="senha" id="senha" required>
+  </div>
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="/usuarios" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %} -->
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ usuario and 'Editar' or 'Novo' }} Usuário</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to right, #e0f7fa, #e8f5e9);
+      /* azul e verde claro */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .form-box {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00796b;
+      /* verde escuro */
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #0277bd;
+      /* azul */
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #b0bec5;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button,
+    .btn-cancelar {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    button {
+      background-color: #43a047;
+      /* verde médio */
+      color: white;
+    }
+
+    button:hover {
+      background-color: #2e7d32;
+    }
+
+    .btn-cancelar {
+      background-color: #90a4ae;
+      /* cinza azul */
+      color: white;
+    }
+
+    .btn-cancelar:hover {
+      background-color: #607d8b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form-box">
+    <h2>{{ usuario and 'Editar' or 'Novo' }} Usuário</h2>
+    <form method="POST">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" name="nome" id="nome" value="{{ usuario.nome if usuario else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" value="{{ usuario.email if usuario else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" name="senha" id="senha" required>
+      </div>
+      <button type="submit">Salvar</button>
+      <a href="/usuarios" class="btn-cancelar">Cancelar</a>
+    </form>
+  </div>
+
+</body>
+
+</html>

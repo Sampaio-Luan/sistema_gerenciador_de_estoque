@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Sobre{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <style>
+  h2, h3 {
+    color: #2e7d32; /* verde escuro suave */
+    margin-top: 30px;
+  }
+
+  p {
+    text-align: justify;
+    line-height: 1.6;
+  }
+
+  
+</style>
+</head>
+<body>
+
+
+<h2>Sobre o Sistema</h2>
+
+<h3>🗂️ Descrição do Projeto – Sistema de Gerenciamento de Estoque</h3>
+<h3>💡 Visão Geral</h3>
+<p>
+  O projeto consiste em um sistema web para gerenciamento de estoque, desenvolvido com foco em praticidade, controle e organização dos produtos de uma empresa. A plataforma permite o cadastro, edição e controle de entradas e saídas de mercadorias, oferecendo uma interface amigável e responsiva para facilitar o uso tanto em computadores quanto em dispositivos móveis.
+</p>
+
+<h3>🎯 Objetivo</h3>
+<p>
+  O principal objetivo é fornecer uma solução simples e eficiente para que pequenas e médias empresas possam gerenciar seus estoques em tempo real, reduzindo perdas, evitando rupturas e melhorando a tomada de decisão com base em dados atualizados.
+</p>
+
+<h3>🧩 Funcionalidades</h3>
+<ul>
+  <li>✅ Cadastro de produtos com campos como nome, categoria, quantidade, unidade, preço, etc.</li>
+  <li>📦 Controle de movimentações (entradas e saídas) com registro de data, responsável e motivo.</li>
+  <li>🗂️ Cadastro de categorias e subcategorias de produtos.</li>
+  <li>👥 Gestão de usuários com níveis de acesso (administrador e operador).</li>
+  <li>🔍 Filtros e busca inteligente por nome, código, categoria ou status.</li>
+  <li>📊 Relatórios simples sobre estoque atual, movimentações recentes e produtos em baixa.</li>
+  <li>💾 Exportação e importação de dados (JSON).</li>
+</ul>
+
+<h3>🛠️ Tecnologias Utilizadas</h3>
+<ul>
+  <li><strong>Frontend:</strong> HTML, CSS, JavaScript (ou com framework como Bootstrap, opcional).</li>
+  <li><strong>Backend:</strong> Python com Flask.</li>
+  <li><strong>Banco de Dados:</strong> SQLite (simples e eficiente para projetos locais).</li>
+</ul>
+
+<h3>👤 Público-Alvo</h3>
+<p>
+  Pequenas empresas, comerciantes, oficinas, lojas, ou qualquer negócio que necessite de um controle básico de estoque sem depender de soluções complexas e caras.
+</p>
+</body>
+</html>
+
+{% endblock %}

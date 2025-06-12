@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Sobre{% endblock %}
+{% block content %}
+<h2>Histórico de Importações</h2>
+<a href="/exportar_logs_importacao" class="btn btn-secondary mb-3">Exportar .txt</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Tipo</th>
+      <th>Produto</th>
+      <th>Categoria</th>
+      <th>Quantidade</th>
+      <th>Detalhe</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.data.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+      <td>{{ log.tipo }}</td>
+      <td>{{ log.nome_produto }}</td>
+      <td>{{ log.categoria }}</td>
+      <td>{{ log.quantidade }}</td>
+      <td>{{ log.detalhe }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

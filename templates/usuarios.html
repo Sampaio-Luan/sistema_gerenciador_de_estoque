@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Usuários{% endblock %}
+{% block content %}
+<h2>Usuários</h2>
+<a href="/usuario/novo" class="btn btn-success mb-3">Novo Usuário</a>
+<div class="table-responsive">
+<table class="table table-striped">
+    <thead><tr><th>Nome</th><th>Email</th><th>Ações</th></tr></thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.nome }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+                <a href="/usuario/editar/{{ usuario.id }}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="/usuario/excluir/{{ usuario.id }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

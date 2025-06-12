@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Dados Importados</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Quantidade</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in produtos %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nome }}</td>
+            <td>{{ p.categoria }}</td>
+            <td>{{ p.quantidade_em_estoque }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

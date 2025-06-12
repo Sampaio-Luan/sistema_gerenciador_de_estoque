@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Importar Arquivo{% endblock %}
+{% block content %}
+<h2>Importar Dados por Arquivo</h2>
+<form method="POST" enctype="multipart/form-data">
+    <label for="arquivo">Escolha um arquivo .json ou .zip:</label>
+    <input type="file" name="arquivo" id="arquivo" class="form-control mb-3" accept=".json,.zip" required>
+    <button type="submit" class="btn btn-primary">Importar</button>
+</form>
+
+{% endblock %}
