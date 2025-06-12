@@ -1,0 +1,144 @@
+{
+    "produtos": [
+        {
+            "id": 1,
+            "nome": "Arroz Branco 1kg",
+            "descricao": "Arroz Branco 1kg - Produto para estoque de exemplo",
+            "quantidade": 79,
+            "categoria": "Alimentos"
+        },
+        {
+            "id": 2,
+            "nome": "Feijão Carioca 1kg",
+            "descricao": "Feijão Carioca 1kg - Produto para estoque de exemplo",
+            "quantidade": 67,
+            "categoria": "Mercearia"
+        },
+        {
+            "id": 3,
+            "nome": "Macarrão Espaguete 500g",
+            "descricao": "Macarrão Espaguete 500g - Produto para estoque de exemplo",
+            "quantidade": 27,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 4,
+            "nome": "Açúcar Refinado 1kg",
+            "descricao": "Açúcar Refinado 1kg - Produto para estoque de exemplo",
+            "quantidade": 57,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 5,
+            "nome": "Café Torrado 500g",
+            "descricao": "Café Torrado 500g - Produto para estoque de exemplo",
+            "quantidade": 200,
+            "categoria": "Higiene"
+        },
+        {
+            "id": 6,
+            "nome": "Farinha de Trigo 1kg",
+            "descricao": "Farinha de Trigo 1kg - Produto para estoque de exemplo",
+            "quantidade": 44,
+            "categoria": "Higiene"
+        },
+        {
+            "id": 7,
+            "nome": "Leite Integral 1L",
+            "descricao": "Leite Integral 1L - Produto para estoque de exemplo",
+            "quantidade": 93,
+            "categoria": "Limpeza"
+        },
+        {
+            "id": 8,
+            "nome": "Biscoito Cream Cracker 200g",
+            "descricao": "Biscoito Cream Cracker 200g - Produto para estoque de exemplo",
+            "quantidade": 50,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 9,
+            "nome": "Molho de Tomate 340g",
+            "descricao": "Molho de Tomate 340g - Produto para estoque de exemplo",
+            "quantidade": 113,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 10,
+            "nome": "Sal Refinado 1kg",
+            "descricao": "Sal Refinado 1kg - Produto para estoque de exemplo",
+            "quantidade": 106,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 11,
+            "nome": "Detergente Líquido 500ml",
+            "descricao": "Detergente Líquido 500ml - Produto para estoque de exemplo",
+            "quantidade": 91,
+            "categoria": "Limpeza"
+        },
+        {
+            "id": 12,
+            "nome": "Sabão em Pó 1kg",
+            "descricao": "Sabão em Pó 1kg - Produto para estoque de exemplo",
+            "quantidade": 140,
+            "categoria": "Alimentos"
+        },
+        {
+            "id": 13,
+            "nome": "Shampoo 350ml",
+            "descricao": "Shampoo 350ml - Produto para estoque de exemplo",
+            "quantidade": 24,
+            "categoria": "Alimentos"
+        },
+        {
+            "id": 14,
+            "nome": "Sabonete 90g",
+            "descricao": "Sabonete 90g - Produto para estoque de exemplo",
+            "quantidade": 148,
+            "categoria": "Higiene"
+        },
+        {
+            "id": 15,
+            "nome": "Papel Higiênico 4un",
+            "descricao": "Papel Higiênico 4un - Produto para estoque de exemplo",
+            "quantidade": 95,
+            "categoria": "Limpeza"
+        },
+        {
+            "id": 16,
+            "nome": "Refrigerante Cola 2L",
+            "descricao": "Refrigerante Cola 2L - Produto para estoque de exemplo",
+            "quantidade": 139,
+            "categoria": "Alimentos"
+        },
+        {
+            "id": 17,
+            "nome": "Suco de Laranja 1L",
+            "descricao": "Suco de Laranja 1L - Produto para estoque de exemplo",
+            "quantidade": 177,
+            "categoria": "Mercearia"
+        },
+        {
+            "id": 18,
+            "nome": "Água Mineral 1,5L",
+            "descricao": "Água Mineral 1,5L - Produto para estoque de exemplo",
+            "quantidade": 39,
+            "categoria": "Bebidas"
+        },
+        {
+            "id": 19,
+            "nome": "Chocolate Barra 100g",
+            "descricao": "Chocolate Barra 100g - Produto para estoque de exemplo",
+            "quantidade": 83,
+            "categoria": "Limpeza"
+        },
+        {
+            "id": 20,
+            "nome": "Óleo de Soja 900ml",
+            "descricao": "Óleo de Soja 900ml - Produto para estoque de exemplo",
+            "quantidade": 174,
+            "categoria": "Bebidas"
+        }
+    ]
+}
