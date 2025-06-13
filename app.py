@@ -288,7 +288,7 @@ def historico_importacoes():
 def exportar_logs_importacao():
     logs = LogImportacao.query.order_by(LogImportacao.data).all()
     linhas = [
-        f"{l.data.strftime('%d/%m/%Y %H:%M:%S')} | {l.tipo.upper():<10} | {l.nome_produto} | {l.categoria} | {l.quantidade} | {l.detalhe}"
+        f"{l.data.strftime('%d/%m/%Y %H:%M:%S')} | {l.tipo.upper():<10} | {l.nome_produto} | {l.categoria} | {l.quantidade} | R$ {l.preco / 100:.2f} | R$ {(l.quantidade * l.preco) / 100:.2f} | {l.detalhe}"
         for l in logs
     ]
     conteudo = "\n".join(linhas)

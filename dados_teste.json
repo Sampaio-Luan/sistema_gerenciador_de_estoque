@@ -1,0 +1,74 @@
+{
+    "produtos": [
+        {
+            "id": 11,
+            "nome": "Refrigerante 2L",
+            "categoria": "Bebidas",
+            "quantidade": 70,
+            "preco": 2900
+        },
+        {
+            "id": 12,
+            "nome": "Suco de Laranja 1L",
+            "categoria": "Bebidas",
+            "quantidade": 30,
+            "preco": 2469
+        },
+        {
+            "id": 13,
+            "nome": "Biscoito Maizena 400g",
+            "categoria": "Alimentos",
+            "quantidade": 36,
+            "preco": 890
+        },
+        {
+            "id": 14,
+            "nome": "Papel Higi\u00eanico 4un",
+            "categoria": "Higiene",
+            "quantidade": 24,
+            "preco": 404
+        },
+        {
+            "id": 15,
+            "nome": "Sab\u00e3o em P\u00f3 1kg",
+            "categoria": "Limpeza",
+            "quantidade": 48,
+            "preco": 1253
+        },
+        {
+            "id": 16,
+            "nome": "Shampoo 350ml",
+            "categoria": "Higiene",
+            "quantidade": 99,
+            "preco": 1231
+        },
+        {
+            "id": 17,
+            "nome": "Desodorante 150ml",
+            "categoria": "Higiene",
+            "quantidade": 86,
+            "preco": 2495
+        },
+        {
+            "id": 18,
+            "nome": "Detergente 500ml",
+            "categoria": "Limpeza",
+            "quantidade": 49,
+            "preco": 1864
+        },
+        {
+            "id": 19,
+            "nome": "Sabonete 90g",
+            "categoria": "Higiene",
+            "quantidade": 92,
+            "preco": 844
+        },
+        {
+            "id": 20,
+            "nome": "\u00c1gua Mineral 1,5L",
+            "categoria": "Bebidas",
+            "quantidade": 51,
+            "preco": 2001
+        }
+    ]
+}
