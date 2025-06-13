@@ -1,20 +1,42 @@
-
 {% extends 'base.html' %}
 {% block title %}Movimentações{% endblock %}
 {% block content %}
 <h2>Movimentações</h2>
 <a href="/movimentacao/nova" class="btn btn-primary mb-3">Nova Movimentação</a>
 <table class="table table-striped">
-    <thead><tr><th>Tipo</th><th>Produto</th><th>Quantidade</th><th>Data</th></tr></thead>
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Preço</th>
+            <th>Total</th>
+            <th>Data</th>
+        </tr>
+    </thead>
     <tbody>
         {% for m in movimentacoes %}
         <tr>
             <td>{{ m.tipo }}</td>
             <td>{{ m.produto.nome }}</td>
             <td>{{ m.quantidade }}</td>
+            <td>R$ {{ '%.2f' | format(m.preco / 100) }}</td>
+            <td>R$ {{ '%.2f' | format(m.quantidade * m.preco / 100) }}</td>
             <td>{{ m.data.strftime('%d/%m/%Y %H:%M') }}</td>
         </tr>
         {% endfor %}
     </tbody>
+     <tfoot>
+            {% set ns = namespace(total=0) %}
+            {% for mov in movimentacoes %}
+            {%if mov.tipo == 'Saída'%}
+            {% set ns.total = ns.total + (mov.quantidade * mov.preco) %}
+            {% endif %}
+            {% endfor %}
+            <tr>
+                <th colspan="5" class="text-end">Total em saída:</th>
+                <th>R$ {{ '%.2f' | format(ns.total / 100) }}</th>
+            </tr>
+        </tfoot>
 </table>
 {% endblock %}

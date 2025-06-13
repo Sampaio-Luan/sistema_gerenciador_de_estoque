@@ -8,5 +8,15 @@
         placeholder="https://exemplo.com/dados.json">
     <button type="submit" class="btn btn-primary">Importar</button>
 </form>
+{% set mensagens = get_flashed_messages() %}
+{% if mensagens %}
+
+    {% for msg in mensagens %}
+    <div class="alert alert-error" role="alert">
+        {{ msg }}
+    </div>
+    {% endfor %}
+
+{% endif %}
 
 {% endblock %}

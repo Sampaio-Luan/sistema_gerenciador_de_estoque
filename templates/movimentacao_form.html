@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% block title %}Nova Movimentação{% endblock %}
 {% block content %}
@@ -24,5 +23,16 @@
         <input type="number" name="quantidade" class="form-control" required>
     </div>
     <button class="btn btn-primary">Registrar</button>
+    <a href="/movimentacoes" class="btn btn-secondary">Cancelar</a>
 </form>
+{% set mensagens = get_flashed_messages() %}
+{% if mensagens %}
+
+{% for msg in mensagens %}
+<div class="alert alert-error" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}
+
+{% endif %}
 {% endblock %}

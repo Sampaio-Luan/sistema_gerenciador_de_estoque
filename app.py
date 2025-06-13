@@ -13,6 +13,8 @@ app.secret_key = 'segredo123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///estoque.db'
 db = SQLAlchemy(app)
 
+# region  TABELAS
+
 
 # MODELOS
 class Usuario(db.Model):
@@ -20,6 +22,7 @@ class Usuario(db.Model):
     nome = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha = db.Column(db.String(120), nullable=False)
+    role = db.Column(db.String(20), default='user')  # admin ou user
 
 
 class Categoria(db.Model):
@@ -32,6 +35,7 @@ class Produto(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.String(200))
     quantidade = db.Column(db.Integer, default=0)
+    preco = db.Column(db.Integer, default=0)  # preço em centavos
     categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'))
     categoria = db.relationship('Categoria')
 
@@ -42,6 +46,7 @@ class Movimentacao(db.Model):
     produto_id = db.Column(db.Integer, db.ForeignKey('produto.id'))
     produto = db.relationship('Produto')
     quantidade = db.Column(db.Integer)
+    preco = db.Column(db.Integer, default=0)
     data = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -56,6 +61,7 @@ class ProdutoImportado(db.Model):
     nome = db.Column(db.String(100))
     categoria = db.Column(db.String(100))
     quantidade = db.Column(db.Integer)
+    preco = db.Column(db.Integer, default=0)
 
 
 class LogImportacao(db.Model):
@@ -65,28 +71,13 @@ class LogImportacao(db.Model):
     nome_produto = db.Column(db.String(100))
     categoria = db.Column(db.String(100))
     quantidade = db.Column(db.Integer)
+    preco = db.Column(db.Integer, default=0)
     detalhe = db.Column(db.String(200))
+# endregion
 
+# region ROTAS
 
-
-@app.route('/dados_estoque')
-def dados_estoque():
-    # Agrupa os produtos por categoria e soma a quantidade de itens em estoque
-    estoque_por_categoria = db.session.query(
-        Produto.categoria, db.func.sum(Produto.quantidade_em_estoque).label('total_estoque')
-    ).group_by(Produto.categoria).all()
-
-    # Formata os dados para enviar como JSON
-    dados = [{'categoria': categoria, 'quantidade': total_estoque} for categoria, total_estoque in estoque_por_categoria]
-    
-    return jsonify(dados)
-
-
-@app.route('/dados_vendas')
-def dados_vendas():
-    vendas = Venda.query.all()  # Recupera todas as vendas
-    dados = [{'mes': venda.mes, 'valor': venda.valor} for venda in vendas]  # Formata os dados para JSON
-    return jsonify(dados)
+# region DADOS
 
 
 @app.route('/exportar_dados')
@@ -106,6 +97,7 @@ def exportar_dados():
                 'nome': p.nome,
                 'descricao': p.descricao,
                 'quantidade': p.quantidade,
+                'preco': p.preco,
                 'categoria': p.categoria.nome if p.categoria else None
             }
             for p in Produto.query.all()
@@ -116,14 +108,12 @@ def exportar_dados():
                 'tipo': m.tipo,
                 'produto': m.produto.nome if m.produto else None,
                 'quantidade': m.quantidade,
+                'preco': m.preco,
                 'data': m.data.strftime('%Y-%m-%d %H:%M:%S')
             }
             for m in Movimentacao.query.all()
         ],
-        'vendas': [
-            {'id': v.id, 'mes': v.mes, 'valor': v.valor}
-            for v in Venda.query.all()
-        ]
+        
     }
 
     json_bytes = json.dumps(dados, indent=4).encode('utf-8')
@@ -138,7 +128,6 @@ def exportar_dados():
         as_attachment=True,
         download_name='dados_exportados.zip'
     )
-
 
 
 @app.route('/importar_url', methods=['GET', 'POST'])
@@ -165,16 +154,16 @@ def importar_url():
                 registro = ProdutoImportado(
                     nome=item['nome'],
                     categoria=item['categoria'],
-                    quantidade=item['quantidade']
+                    quantidade=item['quantidade'],
+                    preco=item.get('preco', 0)  # valor padrão 0 se não existir
                 )
                 db.session.add(registro)
             db.session.commit()
-            flash('Importação por URL realizada com sucesso!', 'success')
+            flash('Importação por URL realizada com sucesso!', 'success',)
             return redirect('/produtos_importados')
         except Exception as e:
             flash(f'Erro ao importar: {e}', 'danger')
     return render_template('importar_url.html')
-
 
 
 @app.route('/importar_arquivo', methods=['GET', 'POST'])
@@ -200,7 +189,8 @@ def importar_arquivo():
                 registro = ProdutoImportado(
                     nome=item['nome'],
                     categoria=item['categoria'],
-                    quantidade=item['quantidade']
+                    quantidade=item['quantidade'],
+                    preco=item.get('preco', 0)  # valor padrão 0 se não existir
                 )
                 db.session.add(registro)
             db.session.commit()
@@ -242,6 +232,7 @@ def importar_para_estoque():
                 nome_produto=imp.nome,
                 categoria=imp.categoria,
                 quantidade=imp.quantidade,
+                preco=imp.preco,
                 detalhe='Quantidade somada ao produto existente.'
             )
             produto_final = produto_existente
@@ -250,7 +241,8 @@ def importar_para_estoque():
                 nome=imp.nome,
                 descricao="Importado de dados externos",
                 quantidade=imp.quantidade,
-                categoria_id=categoria.id if categoria else None
+                categoria_id=categoria.id if categoria else None,
+                preco=imp.preco
             )
             db.session.add(novo)
             db.session.flush()  # garante novo.id
@@ -259,6 +251,7 @@ def importar_para_estoque():
                 nome_produto=imp.nome,
                 categoria=imp.categoria,
                 quantidade=imp.quantidade,
+                preco=imp.preco,
                 detalhe='Novo produto criado no estoque.'
             )
             produto_final = novo
@@ -268,6 +261,7 @@ def importar_para_estoque():
             tipo='Entrada',
             produto_id=produto_final.id,
             quantidade=imp.quantidade,
+            preco=imp.preco,
             data=datetime.utcnow()
         )
         db.session.add(mov)
@@ -280,11 +274,15 @@ def importar_para_estoque():
     flash('Produtos enviados ao estoque com sucesso!', 'success')
     return redirect('/produtos')
 
+# endregion DADOS
 
+
+# region HISTORICOS
 @app.route('/historico_importacoes')
 def historico_importacoes():
     logs = LogImportacao.query.order_by(LogImportacao.data.desc()).all()
     return render_template('historico_importacoes.html', logs=logs)
+
 
 @app.route('/exportar_logs_importacao')
 def exportar_logs_importacao():
@@ -305,13 +303,69 @@ def exportar_logs_importacao():
         as_attachment=True,
         download_name='log_importacao.txt'
     )
+# endregion HISTORICOS
 
+# region PRODUTOS
+
+
+@app.route('/produtos')
+def listar_produtos():
+    produtos = Produto.query.all()
+    return render_template('produtos.html', produtos=produtos)
+
+
+@app.route('/produto/novo', methods=['GET', 'POST'])
+def novo_produto():
+    categorias = Categoria.query.all()
+    if request.method == 'POST':
+        preco_float = float(request.form['preco'].replace(',', '.'))
+        preco_centavos = int(preco_float * 100)
+
+        novo = Produto(
+            nome=request.form['nome'],
+            descricao=request.form['descricao'],
+            quantidade=int(request.form['quantidade']),
+            preco=preco_centavos,
+            categoria_id=int(request.form['categoria'])
+        )
+
+        db.session.add(novo)
+        db.session.commit()
+        return redirect('/produtos')
+    return render_template('produto_form.html', categorias=categorias)
 
 
 @app.route('/produtos_importados')
 def produtos_importados():
     produtos = ProdutoImportado.query.all()
     return render_template('produtos_importados.html', produtos=produtos)
+
+
+# ROTA PARA EDITAR PRODUTO
+@app.route('/produto/editar/<int:id>', methods=['GET', 'POST'])
+def editar_produto(id):
+    produto = Produto.query.get_or_404(id)
+    categorias = Categoria.query.all()
+    if request.method == 'POST':
+        preco_float = float(request.form['preco'].replace(',', '.'))
+        preco_centavos = int(preco_float * 100)
+        produto.nome = request.form['nome']
+        produto.descricao = request.form['descricao']
+        produto.quantidade = request.form['quantidade']
+        produto.categoria_id = request.form['categoria']
+        produto.preco = preco_centavos
+        db.session.commit()
+        return redirect('/produtos')
+    return render_template('produto_form.html', produto=produto, categorias=categorias)
+
+
+# ROTA PARA EXCLUIR PRODUTO
+@app.route('/produto/excluir/<int:id>', methods=['GET', 'POST'])
+def excluir_produto(id):
+    produto = Produto.query.get_or_404(id)
+    db.session.delete(produto)
+    db.session.commit()
+    return redirect('/produtos')
 
 
 @app.route('/excluir_importados', methods=['POST'])
@@ -340,7 +394,8 @@ def exportar_importados():
                 'id': p.id,
                 'nome': p.nome,
                 'categoria': p.categoria,
-                'quantidade': p.quantidade
+                'quantidade': p.quantidade,
+                'preco': p.preco
             } for p in produtos
         ]
     }
@@ -357,111 +412,11 @@ def exportar_importados():
         as_attachment=True,
         download_name='produtos_importados.zip'
     )
+# endregion PRODUTOS
+
+# region MOVIMENTACOES
 
 
-# ROTAS
-@app.route('/')
-def index():
-    return redirect('/login')
-
-
-@app.route('/login', methods=['GET'])
-def login():
-    return render_template('login.html')
-
-
-@app.route('/autenticar', methods=['POST'])
-def autenticar():
-    email = request.form['email']
-    senha = request.form['senha']
-    usuario = Usuario.query.filter_by(email=email, senha=senha).first()
-    if usuario:
-        session['usuario'] = usuario.email
-        session['nome_usuario'] = usuario.nome
-        return redirect('/sobre')
-    flash('Login inválido!')
-    return redirect('/login')
-
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/login')
-
-
-
-# @app.route('/dashboard')
-# def dashboard():
-#     return render_template('dashboard.html')
-
-
-@app.route('/sobre')
-def sobre():
-    return render_template('sobre.html')
-
-
-# Cadastro de usuário
-@app.route('/usuarios')
-def listar_usuarios():
-    usuarios = Usuario.query.all()
-    return render_template('usuarios.html', usuarios=usuarios)
-
-
-@app.route('/usuario/novo', methods=['GET', 'POST'])
-def novo_usuario():
-    if request.method == 'POST':
-        novo = Usuario(
-            nome=request.form['nome'],
-            email=request.form['email'],
-            senha=request.form['senha']
-        )
-        db.session.add(novo)
-        db.session.commit()
-        return redirect('/usuarios')
-    return render_template('usuario_form.html')
-
-
-# Produtos
-@app.route('/produtos')
-def listar_produtos():
-    produtos = Produto.query.all()
-    return render_template('produtos.html', produtos=produtos)
-
-
-@app.route('/produto/novo', methods=['GET', 'POST'])
-def novo_produto():
-    categorias = Categoria.query.all()
-    if request.method == 'POST':
-        novo = Produto(
-            nome=request.form['nome'],
-            descricao=request.form['descricao'],
-            quantidade=request.form['quantidade'],
-            categoria_id=request.form['categoria']
-        )
-        db.session.add(novo)
-        db.session.commit()
-        return redirect('/produtos')
-    return render_template('produto_form.html', categorias=categorias)
-
-
-# Categorias
-@app.route('/categorias')
-def listar_categorias():
-    categorias = Categoria.query.all()
-    return render_template('categorias.html', categorias=categorias)
-
-
-@app.route('/categoria/nova', methods=['GET', 'POST'])
-def nova_categoria():
-    if request.method == 'POST':
-        nova = Categoria(nome=request.form['nome'])
-        db.session.add(nova)
-        db.session.commit()
-        return redirect('/categorias')
-    return render_template('categoria_form.html')
-
-
-# Movimentações
 @app.route('/movimentacoes')
 def listar_movimentacoes():
     movimentacoes = Movimentacao.query.order_by(Movimentacao.data.desc()).all()
@@ -485,47 +440,138 @@ def nova_movimentacao():
             else:
                 return 'Estoque insuficiente'
 
-        mov = Movimentacao(tipo=tipo, produto_id=produto_id, quantidade=qtd)
+        mov = Movimentacao(tipo=tipo, produto_id=produto_id, quantidade=qtd, preco=produto.preco)
         db.session.add(mov)
         db.session.commit()
         return redirect('/movimentacoes')
 
     return render_template('movimentacao_form.html', produtos=produtos)
+# endregion MOVIMENTACOES
+
+# region USUARIOS
 
 
+@app.route('/')
+def index():
+    return redirect('/login')
+
+
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
+
+def usuario_admin():
+    return session.get('usuario') and Usuario.query.filter_by(email=session['usuario'], role='admin').first()
+
+
+
+@app.route('/autenticar', methods=['POST'])
+def autenticar():
+    email = request.form['email']
+    senha = request.form['senha']
+    usuario = Usuario.query.filter_by(email=email, senha=senha).first()
+    if usuario:
+        session['usuario'] = usuario.email
+        session['nome_usuario'] = usuario.nome
+        return redirect('/produtos')
+    flash('Login inválido!')
+    return redirect('/login')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
+
+
+@app.route('/usuarios')
+def listar_usuarios():
+    if not usuario_admin():
+        flash('Acesso restrito ao administrador.', 'danger')
+        return redirect('/produtos')
+    usuarios = Usuario.query.all()
+    return render_template('usuarios.html', usuarios=usuarios)
+
+
+
+@app.route('/usuario/novo', methods=['GET', 'POST'])
+def novo_usuario():
+    if not usuario_admin():
+        flash('Acesso restrito ao administrador.', 'danger')
+        return redirect('/produtos')
+    if request.method == 'POST':
+        novo = Usuario(
+            nome=request.form['nome'],
+            email=request.form['email'],
+            senha=request.form['senha']
+        )
+        db.session.add(novo)
+        db.session.commit()
+        return redirect('/usuarios')
+    return render_template('usuario_form.html')
+
+
+@app.route('/usuario/editar/<int:id>', methods=['GET', 'POST'])
+def editar_usuario(id):
+    if not usuario_admin():
+        flash('Acesso restrito ao administrador.', 'danger')
+        return redirect('/produtos')
+
+    usuario = Usuario.query.get_or_404(id)
+
+    if request.method == 'POST':
+        usuario.nome = request.form['nome']
+        usuario.email = request.form['email']
+        nova_senha = request.form['senha']
+
+        if nova_senha:
+            usuario.senha = nova_senha  # ou use hash se estiver aplicando segurança
+
+        db.session.commit()
+        flash('Usuário atualizado com sucesso!', 'success')
+        return redirect('/usuarios')
+
+    return render_template('usuario_form.html', usuario=usuario)
 
 
 # ROTA PARA EXCLUIR USUÁRIO
 @app.route('/usuario/excluir/<int:id>', methods=['GET', 'POST'])
 def excluir_usuario(id):
+    if not usuario_admin():
+        flash('Acesso restrito ao administrador.', 'danger')
+        return redirect('/produtos')
     usuario = Usuario.query.get_or_404(id)
     db.session.delete(usuario)
     db.session.commit()
     return redirect('/usuarios')
 
+# endregion USUARIOS
 
-# ROTA PARA EDITAR PRODUTO
-@app.route('/produto/editar/<int:id>', methods=['GET', 'POST'])
-def editar_produto(id):
-    produto = Produto.query.get_or_404(id)
+# region SOBRE
+
+
+@app.route('/sobre')
+def sobre():
+    return render_template('sobre.html')
+# endregion SOBRE
+
+# region CATEGORIAS
+
+
+@app.route('/categorias')
+def listar_categorias():
     categorias = Categoria.query.all()
+    return render_template('categorias.html', categorias=categorias)
+
+
+@app.route('/categoria/nova', methods=['GET', 'POST'])
+def nova_categoria():
     if request.method == 'POST':
-        produto.nome = request.form['nome']
-        produto.descricao = request.form['descricao']
-        produto.quantidade = request.form['quantidade']
-        produto.categoria_id = request.form['categoria']
+        nova = Categoria(nome=request.form['nome'])
+        db.session.add(nova)
         db.session.commit()
-        return redirect('/produtos')
-    return render_template('produto_form.html', produto=produto, categorias=categorias)
-
-
-# ROTA PARA EXCLUIR PRODUTO
-@app.route('/produto/excluir/<int:id>', methods=['GET', 'POST'])
-def excluir_produto(id):
-    produto = Produto.query.get_or_404(id)
-    db.session.delete(produto)
-    db.session.commit()
-    return redirect('/produtos')
+        return redirect('/categorias')
+    return render_template('categoria_form.html')
 
 
 # ROTA PARA EDITAR CATEGORIA
@@ -547,6 +593,11 @@ def excluir_categoria(id):
     db.session.commit()
     return redirect('/categorias')
 
+# endregion CATEGORIAS
+
+# endregion ROTAS
+
+
 
 # Executar
 if __name__ == '__main__':
@@ -554,7 +605,13 @@ if __name__ == '__main__':
         db.create_all()
         # Criar usuário admin padrão se não existir
         if not Usuario.query.filter_by(email='admin@admin.com').first():
-            admin = Usuario(nome='Administrador', email='admin@admin.com', senha='admin')
+            admin = Usuario(
+    nome='Administrador',
+    email='admin@admin.com',
+    senha='admin',
+    role='admin',
+)
+
             db.session.add(admin)
             db.session.commit()
     app.run(debug=True)

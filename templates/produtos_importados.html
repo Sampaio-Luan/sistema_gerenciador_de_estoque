@@ -4,13 +4,16 @@
 <h2>Produtos Importados</h2>
 
 <form method="POST" action="/importar_para_estoque">
+    <a href="/exportar_importados" class="btn btn-secondary mt-3" ,>Exportar todos como ZIP</a>
     <table class="table">
         <thead>
             <tr>
                 <th><input type="checkbox" id="selecionar_todos"></th>
                 <th>Nome</th>
                 <th>Categoria</th>
-                <th>Quantidade</th>
+                <th>Qtd</th>
+                <th>Preço</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
@@ -20,10 +23,24 @@
                 <td>{{ p.nome }}</td>
                 <td>{{ p.categoria }}</td>
                 <td>{{ p.quantidade }}</td>
+                <td>R$ {{ '%.2f' | format(p.preco / 100) }}</td>
+                <td>R$ {{ '%.2f' | format(p.quantidade * p.preco / 100) }}</td>
+
             </tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            {% set ns = namespace(total=0) %}
+            {% for p in produtos %}
+            {% set ns.total = ns.total + (p.quantidade * p.preco) %}
+            {% endfor %}
+            <tr>
+                <th colspan="5" class="text-end">Subtotal:</th>
+                <th>R$ {{ '%.2f' | format(ns.total / 100) }}</th>
+            </tr>
+        </tfoot>
     </table>
+
 
     <button type="submit" class="btn btn-success">Enviar para estoque</button>
 </form>
@@ -34,9 +51,10 @@
     <input type="hidden" name="produto_ids" value="{{ p.id }}">
     {% endfor %}
     <button type="submit" class="btn btn-danger">Excluir todos importados</button>
+
 </form>
 
-<a href="/exportar_importados" class="btn btn-primary mt-3">Exportar todos como ZIP</a>
+
 
 <script>
     document.getElementById('selecionar_todos').addEventListener('change', function () {

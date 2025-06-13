@@ -102,6 +102,16 @@
       </div>
       <button type="submit">Entrar</button>
     </form>
+    {% set mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+
+    {% for msg in mensagens %}
+    <div class="alert alert-error" role="alert">
+      {{ msg }}
+    </div>
+    {% endfor %}
+
+    {% endif %}
 
   </div>
 
